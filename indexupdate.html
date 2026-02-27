@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheather App </title>
+    <link rel = "stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">        <!--this class for appling the css for background and this is the main class  of the page-->
+       <div class="search">            <!--//this is the search bar and imp of search -->
+         <input type="text" placeholder="enter city name" spellcheck="false">
+            <button><img src="images/search.png"></button>
+       </div> 
+       <div class="error">
+        <p>Invaild city name</p>
+       </div>
+       <div class="weather">            <!--this is for the main center part class-->
+            <img src="images/rain.png" class ="weather-icon">     <!--in this is the img url and class to apply css in the css part-->
+            <h1 class="temp">°C</h1>
+            <h2 class="city"> city name</h2>
+        <div class="detail">
+            <div class="col">         <!--this class for the right corner humidity-->
+                <img src="images/humidity.png">    <!--img of humidity-->
+                <div>
+                    <p class="humidity">%</p>   <!--this the class fo modify the text of humidity in css-->
+                    <p>Humidity</p>
+                </div>
+            </div>
+            <div class="col">   <!--this the class for ths left corner windspeed-->
+                <img src="images/wind.png">
+                <div>
+                    <p class="wind"> km/h%</p>
+                    <p>Wind Speed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <script>      //this we started js 
+        const apikey ="YOUR_API_KEY";   //this is an apikey 
+        const apiurl ="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";      //this is the url for weather data  this url is taken form the open weathermap webiste we just search "Built-in API request by city name" then copy the url and place the things according to this 
+
+        const searchBox = document.querySelector(".search input");   //taking input form user and storing in this 
+        const searchbtn = document.querySelector(".search button");   // this is the button 
+
+        const weathericon = document.querySelector(".weather-icon");
+
+        async function checkWeather(city)  
+        {
+            const response = await fetch(apiurl + city + `&appid=${apikey}`);   //inthis we fetch the url data of city
+            
+            if(response.status == 404){
+
+                document.querySelector(".error").style.display = "block";
+                document.querySelector(".weather").style.display = "none";
+
+            }
+            else
+            {
+
+                var data = await response.json();   //that data is in the json formate
+
+                console.log(data);   //this is used to print the data onthe console so that we can use them
+
+                document.querySelector(".city").innerHTML = data.name;     //we fetch city name from the data 
+                document.querySelector(".temp").innerHTML =  Math.round(data.main.temp) +"°C";    //we fetach the temp of we the city we search
+                document.querySelector(".humidity").innerHTML = data.main.humidity +"%";   //in this humidity
+                document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";    //in this speed of the wind
+            
+                if(data.weather[0].main=="Clouds")  //all the things add after main== sign is form the console in which we have weather->main
+                {
+                    weathericon.src = "images/clouds.png";
+                }
+                else if(data.weather[0].main=="Clear")   //the index is zero beacuse this info in on 0 index in the console
+                {
+                    weathericon.src = "images/clear.png";
+                }
+                else if(data.weather[0].main=="Rain")
+                {
+                    weathericon.src = "images/rain.png";
+                }
+                else if(data.weather[0].main=="Drizzle")
+                {
+                    weathericon.src = "images/drizzle.png";
+                }
+                else if(data.weather[0].main=="Mist")
+                {
+                    weathericon.src = "images/mist.png";
+                }
+            
+                document.querySelector(".weather").style.display ="block";
+                document.querySelector(".error").style.display = "none";
+
+
+            }
+
+            
+        }
+        searchbtn.addEventListener("click",()=>{
+            checkWeather(searchBox.value); //calling the function
+        })
+          
+    </script>
+</body>
+</html>
